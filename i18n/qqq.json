@@ -1,0 +1,13 @@
+{
+	"@metadata": {
+		"authors": [
+			"Luka Simić"
+		]
+	},
+	"templatestylesunlimited": "{{name}}",
+	"templatestylesunlimited-desc": "{{desc|name=TemplateStylesUnlimited|url=https://www.mediawiki.org/wiki/Extension:TemplateStylesUnlimited}}",
+	"templatestylesunlimited-fix-content-models-desc": "Description of the FixContentModels maintenance script run through the command-line.",
+	"templatestylesunlimited-fix-content-models-summary": "Summary used when the FixContentModels maintenance script changes a page's content model.",
+	"templatestylesunlimited-fix-content-models-updating-page": "Output of the FixContentModels maintenance script when it is updating a page's content model. Parameters:\n* $1 - name of the page being updated",
+	"templatestylesunlimited-fix-content-models-done": "Output of the FixContentModels maintenance script when it has finished updating content models."
+}

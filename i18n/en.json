@@ -1,0 +1,13 @@
+{
+	"@metadata": {
+		"authors": [
+			"Luka Simić"
+		]
+	},
+	"templatestylesunlimited": "Template Styles Unlimited",
+	"templatestylesunlimited-desc": "Removed CSS sanitization from TemplateStyles, but restricts it to the MediaWiki namespace.",
+	"templatestylesunlimited-fix-content-models-desc": "Removes the sanitized-css content model from pages not in the MediaWiki namespace.",
+	"templatestylesunlimited-fix-content-models-summary": "Changing content model to CSS due to enabling TemplateStylesUnlimited.",
+	"templatestylesunlimited-fix-content-models-updating-page": "Updating content model for page $1...",
+	"templatestylesunlimited-fix-content-models-done": "Done updating content models!"
+}

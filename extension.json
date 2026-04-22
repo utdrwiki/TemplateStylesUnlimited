@@ -1,0 +1,43 @@
+{
+	"name": "TemplateStylesUnlimited",
+	"author": [
+		"Luka Simić"
+	],
+	"url": "https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:TemplateStylesUnlimited",
+	"namemsg": "templatestylesunlimited",
+	"descriptionmsg": "templatestylesunlimited-desc",
+	"license-name": "GPL-2.0-or-later",
+	"type": "parserhook",
+	"requires": {
+		"MediaWiki": ">= 1.45.0",
+		"extensions": {
+			"TemplateStyles": ">= 1.0"
+		}
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\TemplateStylesUnlimited\\": "src/",
+		"MediaWiki\\Extension\\TemplateStylesUnlimited\\Maintenance\\": "maintenance/"
+	},
+	"TestAutoloadNamespaces": {
+		"MediaWiki\\Extension\\TemplateStylesUnlimited\\Tests\\": "tests/phpunit/",
+		"MediaWiki\\Extension\\TemplateStylesUnlimited\\Tests\\Integration\\": "tests/phpunit/integration/"
+	},
+	"config_prefix": "wgTemplateStylesUnlimited",
+	"config": {
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\TemplateStylesUnlimited\\Hooks"
+		}
+	},
+	"Hooks": {
+		"ContentModelCanBeUsedOn": "main",
+		"TemplateStylesStylesheetSanitizer": "main"
+	},
+	"MessagesDirs": {
+		"TemplateStylesUnlimited": [
+			"i18n"
+		]
+	},
+	"manifest_version": 2
+}
