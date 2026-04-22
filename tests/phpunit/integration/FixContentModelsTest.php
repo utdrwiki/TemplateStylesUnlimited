@@ -2,7 +2,6 @@
 
 namespace MediaWiki\Extension\TemplateStylesUnlimited\Tests\Integration;
 
-use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Extension\TemplateStylesUnlimited\Maintenance\FixContentModels;
 use MediaWiki\Extension\TemplateStylesUnlimited\Tests\CreatePageTestTrait;
 use MediaWiki\Tests\Maintenance\MaintenanceBaseTestCase;

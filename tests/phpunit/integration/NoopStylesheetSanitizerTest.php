@@ -40,7 +40,9 @@ class NoopStylesheetSanitizerTest extends MediaWikiLangTestCase {
 		$parsed = $out->runOutputPipeline( $popt )->getContentHolderText();
 		$this->assertEquals(
 			$parsed,
+			// phpcs:disable Generic.Files.LineLength
 			"<div class=\"mw-content-ltr templatestylesunlimited-test\" lang=\"en\" dir=\"ltr\"><style data-mw-deduplicate=\"TemplateStyles:r$revisionId/templatestylesunlimited-test\">.test:has(.test) { background-image: url(\"https://example.com/image.png\"); color: var(--test-color); }</style></div>",
+			// phpcs:enable
 		);
 	}
 }

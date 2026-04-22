@@ -2,8 +2,8 @@
 
 namespace MediaWiki\Extension\TemplateStylesUnlimited\Maintenance;
 
-use MediaWiki\Content\ContentHandler;
 use MediaWiki\Context\RequestContext;
+use MediaWiki\Maintenance\Maintenance;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
 
@@ -15,8 +15,6 @@ if ( $IP === false ) {
 require_once "$IP/maintenance/Maintenance.php";
 // @codeCoverageIgnoreEnd
 
-use MediaWiki\Maintenance\Maintenance;
-
 class FixContentModels extends Maintenance {
 	private RequestContext $context;
 
@@ -27,7 +25,13 @@ class FixContentModels extends Maintenance {
 		$this->addDescription( $this->msg( 'templatestylesunlimited-fix-content-models-desc' ) );
 	}
 
-	private function msg( string $key, ...$args ) {
+	/**
+	 * Shorthand method to grab a plaintext localized message.
+	 * @param string $key Message key
+	 * @param string ...$args Message parameters
+	 * @return string Plaintext message
+	 */
+	private function msg( string $key, string ...$args ) {
 		return $this->context->msg( $key, ...$args )->plain();
 	}
 
@@ -55,7 +59,11 @@ class FixContentModels extends Maintenance {
 			) );
 			$status = $contentModelChangeFactory
 				->newContentModelChange( $user, $page, CONTENT_MODEL_CSS )
-				->doContentModelChange( $this->context, $this->msg( 'templatestylesunlimited-fix-content-models-summary' ), true );
+				->doContentModelChange(
+					$this->context,
+					$this->msg( 'templatestylesunlimited-fix-content-models-summary' ),
+					true
+				);
 			if ( !$status->isOK() ) {
 				$this->fatalError( $statusFormatter->getMessage( $status )->plain() );
 			}

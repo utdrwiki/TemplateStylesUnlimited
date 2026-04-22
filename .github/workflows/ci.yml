@@ -1,4 +1,4 @@
-name: Run tests
+name: Lint and test
 
 on:
   push:
@@ -9,20 +9,19 @@ on:
 jobs:
   test:
     name: "PHPUnit: MW ${{ matrix.mw }}, PHP ${{ matrix.php }}"
-    continue-on-error: ${{ matrix.experimental }}
 
     strategy:
       matrix:
         include:
-          - mw: 'REL1_43'
+          - mw: 'REL1_45'
             php: 8.2
-            experimental: false
+            download-phpunit: true
           - mw: 'REL1_45'
             php: 8.4
-            experimental: true
+            download-phpunit: true
           - mw: 'master'
             php: 8.4
-            experimental: true
+            download-phpunit: false
 
     runs-on: ubuntu-latest
 
@@ -44,7 +43,7 @@ jobs:
         with:
           path: |
             mediawiki
-            !mediawiki/extensions/
+            !mediawiki/extensions/TemplateStylesUnlimited
             !mediawiki/vendor/
           key: mw_${{ matrix.mw }}-php${{ matrix.php }}-v20
 
@@ -54,28 +53,60 @@ jobs:
           path: ~/.composer/cache
           key: composer-php${{ matrix.php }}
 
-      - uses: actions/checkout@v4
-        with:
-          path: EarlyCopy
-
-      - name: Install MediaWiki
+      - name: Check out MediaWiki
         if: steps.cache-mediawiki.outputs.cache-hit != 'true'
-        working-directory: ~
-        run: bash EarlyCopy/.github/workflows/installWiki.sh ${{ matrix.mw }}
+        uses: actions/checkout@v4
+        with:
+          repository: wikimedia/mediawiki
+          ref: ${{ matrix.mw }}
+          path: mediawiki
+          submodules: recursive
 
-      - uses: actions/checkout@v4
+      - name: Check out TemplateStyles if it wasn't already
+        if: ${{ hashFiles('mediawiki/extensions/TemplateStyles/') == '' }}
+        uses: actions/checkout@v4
+        with:
+          repository: wikimedia/mediawiki-extensions-TemplateStyles
+          ref: ${{ matrix.mw }}
+          path: mediawiki/extensions/TemplateStyles
+
+      - name: Composer update (MediaWiki)
+        run: composer update
+
+      - name: Install the wiki
+        if: steps.cache-mediawiki.outputs.cache-hit != 'true'
+        run: maintenance/run install --dbtype sqlite --dbuser root --dbname mw --dbpath $(pwd) --pass AdminPassword WikiName AdminUser
+
+      - name: Configure the wiki
+        if: steps.cache-mediawiki.outputs.cache-hit != 'true'
+        run: |
+          echo '
+          $wgShowExceptionDetails = true;
+          $wgDevelopmentWarnings = true;
+          $wgShowDBErrorBacktrace = true;
+          wfLoadExtension( "TemplateStyles" );
+          wfLoadExtension( "TemplateStylesUnlimited" );
+          ' >> LocalSettings.php
+
+      - name: Check out TemplateStylesUnlimited
+        uses: actions/checkout@v4
         with:
           path: mediawiki/extensions/TemplateStylesUnlimited
 
-      - name: Composer update
+      - name: Composer update (extension)
+        working-directory: mediawiki/extensions/TemplateStylesUnlimited
         run: composer update
 
       - name: Run update.php
         run: maintenance/run update --quick
 
-      - name: Fetch phpunit.xml.dist for modern MW
-        working-directory: mediawiki
-        run: bash ../EarlyCopy/.github/workflows/fetchPhpunitConf.sh ${{ matrix.mw }}
+      - name: Run phpcs
+        working-directory: mediawiki/extensions/TemplateStylesUnlimited
+        run: composer test
+
+      - name: Run phan
+        working-directory: mediawiki/extensions/TemplateStylesUnlimited
+        run: composer phan
 
       - name: Run PHPUnit
         run: composer phpunit -- --group TemplateStylesUnlimited
